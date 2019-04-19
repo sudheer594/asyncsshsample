@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.12.2/xterm.css" />
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.12.2/addons/fullscreen/fullscreen.css" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.12.2/xterm.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.12.2/addons/attach/attach.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.12.2/addons/fit/fit.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.12.2/addons/winptyCompat/winptyCompat.js"></script>
+
+
+
+</head>
+
+<body>
+    <div id="terminal"></div>
+    <script>
+        Terminal.applyAddon(attach);
+        Terminal.applyAddon(fit);
+        Terminal.applyAddon(winptyCompat);
+        // The terminal
+        const term = new Terminal();
+        // No idea what this does
+        term.winptyCompatInit();
+        // This kinda makes sense
+        const container = document.getElementById('terminal');
+        term.open(container);
+        // Open the websocket connection to the backend
+        const protocol = (location.protocol === 'https:') ? 'wss://' : 'ws://';
+        const port = location.port ? `:${location.port}` : '';
+        const socketUrl = `${protocol}${location.hostname}${port}/ws`;
+        const socket = new WebSocket(socketUrl);
+        // Attach the socket to the terminal
+        socket.onopen = (ev) => { term.attach(socket); };
+    </script>
+</body>
+
+</html>
